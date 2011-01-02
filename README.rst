@@ -23,10 +23,10 @@ presets which have been created by an Administrator type person.
 Requirements
 ============
 
-Python 2.5+ - http://python.org/
-Bottle - http://bottle.paws.de/
-Paste - http://pythonpaste.org/ *Recommended*
-HandbrakeCLI - http://handbrake.fr/downloads2.php
+* Python 2.5+ - http://python.org/
+* Bottle - http://bottle.paws.de/
+* Paste - http://pythonpaste.org/ *Recommended*
+* HandbrakeCLI - http://handbrake.fr/downloads2.php
 
 Install
 =======
