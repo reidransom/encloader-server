@@ -35,6 +35,6 @@ Assuming you have Python 2.5+, Bottle and Paste installed, download
 HandbrakeCLI and place the binary in the encloader/handbrake folder.  Then cd
 into the handbrake folder and run::
 
-python encloadd.py
+    python encloadd.py
 
 Then visit http://localhost:8000/ in your web browser to start encloading!
