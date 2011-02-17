@@ -1,0 +1,51 @@
+body {
+    background: #111 url(bg-body.jpg) no-repeat 50% 0;
+    color: #444;
+    font-family: sans-serif;
+}
+div#main {
+    width: 400px;
+    margin: 50px auto;
+    border: 3px solid #000;
+    background-color: #fff;
+    padding: 50px 10px;
+}
+label, div.module {
+    border: 1px solid #aaa;
+    padding: 20px 10px;
+    margin: 10px 0;
+    display: block;
+    background: url(bg-module.gif) repeat-x;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    text-shadow: #fff 0 1px 0;
+}
+span.info {
+    font-size: 9pt;
+}
+span.name, span#progress {
+    font-size: 14pt;
+    font-weight: bold;
+}
+span#progress {
+    background: url(throbber.gif) 0 0 no-repeat;
+    padding-left: 42px;
+    line-height: 32px;
+    display: block;
+}
+span#progress.complete {
+    background-image: none;
+    padding-left: 0;
+}
+label.readonly {
+    color: #888;
+}
+input, select {
+    width: 100%;
+}
+input[type=submit] {
+    margin: 30px auto;
+    width: 300px;
+    display: block;
+}
