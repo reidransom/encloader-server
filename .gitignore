@@ -36,6 +36,8 @@ Icon?
 Thumbs.db
 
 .*.swp
+*.mov
+*.mp4
 
 db/encload.db
 testsettings.py
