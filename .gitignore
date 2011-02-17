@@ -41,3 +41,4 @@ Thumbs.db
 
 db/encload.db
 testsettings.py
+bin/HandBrakeCLI
