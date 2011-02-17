@@ -37,4 +37,5 @@ Thumbs.db
 
 .*.swp
 
-*.db
+db/encload.db
+testsettings.py
