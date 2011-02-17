@@ -31,12 +31,4 @@ DESTINATION_PRESETS = {
         #"port" : 21,
         #"path" : "/",
     },
-    'b2': {
-        'name': 'B2 User',
-        'host': 'b2-studios.com',
-        'user': 'b2user@b2-studios.com',
-        'passwd': 'w00leyb2',
-        #"port" : 21,
-        #"path" : "/",
-    },
 }
