@@ -1,8 +1,10 @@
 import os
 import sqlite3
-from ftplib import FTP
+import subprocess
+import re
 
 from settings import *
+from ftplib25 import FTP
 
 class DBConnection(object):
 
@@ -26,6 +28,8 @@ class Job(object):
         self.input_filename = input_filename
         self.status = 'pending'
         self.percent = 0
+        self.filesize = 0
+        self.xfered = 0
         
     def save(self):
         """Commits the Job to the database.
@@ -79,16 +83,25 @@ class Job(object):
         input_path = self.get_input_path()
         output_path = self.get_encode_path()
 
-        # QT first pass
-        #dv_path = self.get_input_path() + '.dv'
-        #cmd = '%s -i %s -o %s' % (os.path.join(CWD, 'mov2dv', 'mov2dv'),
-        #    input_path, dv_path)
-        #os.system(cmd)
-        #input_path = dv_path
-
         # run the encode
         cmd = self.get_enc('cmd') % locals()
-        os.system(cmd)
+        print '\n%s\n' % cmd
+        p = subprocess.Popen(
+            cmd,
+            shell=True, 
+            stdout=subprocess.PIPE, 
+            stderr=subprocess.STDOUT,
+        )
+
+        # Parse handbrake output for progress updates
+        repercent = re.compile(", (\d+\.\d\d) %")
+        chunk = 128
+        line = p.stdout.read(chunk)
+        while line:
+            matchpercent = repercent.search(line)
+            if matchpercent:
+                self.update_percent(float(matchpercent.group(1)))
+            line = p.stdout.read(chunk)
 
         # delete the original file
         os.remove(input_path)
@@ -107,10 +120,14 @@ class Job(object):
 
         # upload the file
         encode_path = self.get_encode_path()
+        
+        self.filesize = os.path.getsize(encode_path)
+        
         fp = open(encode_path, 'rb')
         ftp = FTP(self.get_dest('host'), self.get_dest('user'), 
             self.get_dest('passwd'))
-        ftp.storbinary('STOR %s' % self.destination_path, fp)
+        ftp.storbinary('STOR %s' % self.destination_path, fp, 16384,
+            self.storbinary_callback)
         ftp.close()
         fp.close()
 
@@ -146,6 +163,10 @@ class Job(object):
         return os.path.join(ENCODE_DIR, str(self.id) + "-upload" + 
             os.path.splitext(self.input_filename)[1])
     
+    def storbinary_callback(self, buff):
+        self.xfered = self.xfered + len(buff) - 1
+        self.update_percent(float(self.xfered)*100/self.filesize)
+    
     @classmethod
     def encload(cls, id):
         """Encodes and uploads a job."""
@@ -164,7 +185,7 @@ class Job(object):
         """Returns a tuple (string status, real percent)."""
         db.c.execute('select status, percent from job where id=?', (id, ))
         row = db.c.fetchone()
-        return (row[0], row[1])
+        return (row[0], int(row[1]))
     
     @classmethod
     def get(cls, db, id):

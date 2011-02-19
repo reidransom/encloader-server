@@ -76,13 +76,17 @@ type="text" />
         $('#progress').everyTime('3s', function() {
             $.getJSON('/job/status/{{j}}', function(data) {
                 var s = data.status;
-                if ((s == 'complete') || (s == 'failed')){
+                var p = data.percent;
+                if ((s == 'complete') || (s == 'failed')) {
                     s = s + '.';
                     $('#progress').stopTime();
                     $('#progress').addClass('complete');
                 }
-                else {
+                if (s == 'pending') {
                     s = s + '...';
+                }
+                if ((s == 'encoding') || (s == 'uploading')) {
+                    s = s + ' ' + p + '% ...';
                 }
                 s = s.charAt(0).toUpperCase() + s.slice(1);
                 $('#progress').html(s);

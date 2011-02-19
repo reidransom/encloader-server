@@ -39,6 +39,11 @@ Thumbs.db
 *.mov
 *.mp4
 
-db/encload.db
-testsettings.py
-bin/HandBrakeCLI
+settings.py.*
+
+db/*
+!.gitignore
+bin/*
+!.gitignore
+uploads/*
+!.gitignore
