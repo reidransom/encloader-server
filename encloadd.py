@@ -11,7 +11,9 @@ try:
 except ImportError:
     import simplejson as json
 
-from bottle import route, template, request, static_file, run, PasteServer
+#from bottle import route, template, request, static_file, run, PasteServer
+import bottle
+bottle.TEMPLATE_PATH.append(os.path.dirname(__file__))
 
 from settings import *
 import models
@@ -34,19 +36,19 @@ def get_destination_preset(name):
 def P(s):
     return '<p>' + s + '</p>'
 
-@route('/')
+@bottle.route('/')
 def index():
-    return template('index', encoding_presets=ENCODING_PRESETS,
+    return bottle.template('index', encoding_presets=ENCODING_PRESETS,
         destination_presets=DESTINATION_PRESETS,
-        e=request.GET.get('e', ''),
-        d=request.GET.get('d', ''),
-        p=request.GET.get('p', ''),
-        v=request.GET.get('v', ''),
+        e=bottle.request.GET.get('e', ''),
+        d=bottle.request.GET.get('d', ''),
+        p=bottle.request.GET.get('p', ''),
+        v=bottle.request.GET.get('v', ''),
         j=None)
 
-@route('/joblook')
+@bottle.route('/joblook')
 def joblook():
-    return template('index', encoding_presets=ENCODING_PRESETS,
+    return bottle.template('index', encoding_presets=ENCODING_PRESETS,
         destination_presets=DESTINATION_PRESETS,
         e="web_post_full",
         d="b2",
@@ -54,25 +56,25 @@ def joblook():
         v="somepath.html",
         j=5)
 
-@route('/job/status/:id')
+@bottle.route('/job/status/:id')
 def job_status(id):
     db = models.DBConnection()
     (s, p) = models.Job.get_status(db, id)
     db.close()
     return {'status': s, 'percent': p}
 
-@route('/job', method='post')
+@bottle.route('/job', method='post')
 def job():
     
-    file_data = request.files.get('file_data')
+    file_data = bottle.request.files.get('file_data')
     
     if not file_data.filename:
         return "Error"
         
     db = models.DBConnection()
-    job = models.Job(db, request.forms.get('encoding_preset'), 
-        request.forms.get('destination_preset'),
-        request.forms.get('destination_path'),
+    job = models.Job(db, bottle.request.forms.get('encoding_preset'), 
+        bottle.request.forms.get('destination_preset'),
+        bottle.request.forms.get('destination_path'),
         os.path.basename(file_data.filename))
     job.save()
 
@@ -90,17 +92,17 @@ def job():
     
     db.close()
 
-    return template('index', encoding_presets=ENCODING_PRESETS,
+    return bottle.template('index', encoding_presets=ENCODING_PRESETS,
         destination_presets=DESTINATION_PRESETS,
         e=job.encoding_preset,
         d=job.destination_preset,
         p=job.destination_path,
-        v=request.forms.get('view', ''),
+        v=bottle.request.forms.get('view', ''),
         j=job.id)
 
-@route('/static/:path#.+#')
+@bottle.route('/static/:path#.+#')
 def send_static(path):
-    return static_file(path, root=os.path.join(CWD, 'static'))
+    return bottle.static_file(path, root=os.path.join(CWD, 'static'))
 
 #run(host='0.0.0.0', port=8000, reloader=True)
-run(host='0.0.0.0', port=8000, reloader=True, server=PasteServer)
+bottle.run(host='0.0.0.0', port=8000, reloader=True, server=bottle.PasteServer)
