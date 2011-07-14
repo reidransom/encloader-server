@@ -17,8 +17,7 @@
             type="hidden" />{{encoding_presets[e]['name']}}
 %else:
         <select id="encoding_preset" name="encoding_preset">
-# for k in encoding_presets.iterkeys():
-%for k in ('web_post_wide', 'web_post_full'):
+%for k in encoding_presets.keys():
             <option value="{{k}}">{{encoding_presets[k]['name']}}</option>
 %end
         </select>
