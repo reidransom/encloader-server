@@ -80,6 +80,7 @@ class Job(object):
         self.update_status('encoding')
         
         # get paths
+        hb = HB
         input_path = self.get_input_path()
         output_path = self.get_encode_path()
 

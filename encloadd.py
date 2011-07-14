@@ -6,12 +6,6 @@ from ftplib import FTP
 import re
 import subprocess
 
-try:
-    import json # Python 2.6+
-except ImportError:
-    import simplejson as json
-
-#from bottle import route, template, request, static_file, run, PasteServer
 import bottle
 bottle.TEMPLATE_PATH.append(os.path.dirname(__file__))
 
@@ -99,6 +93,10 @@ def job():
         p=job.destination_path,
         v=bottle.request.forms.get('view', ''),
         j=job.id)
+
+@bottle.route('/presets')
+def send_presets():
+    return ENCODING_PRESETS
 
 @bottle.route('/static/:path#.+#')
 def send_static(path):
